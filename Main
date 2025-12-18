@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>マイ・オンライン会議室</title>
+    <script src="https://meet.jit.si/external_api.js"></script>
+    <style>
+        body { margin: 0; padding: 0; overflow: hidden; background-color: #f0f0f0; }
+        #meet { width: 100vw; height: 100vh; }
+    </style>
+</head>
+<body>
+    <div id="meet"></div>
+
+    <script>
+        // URLのパラメータからルーム名を取得。なければランダム生成
+        const urlParams = new URLSearchParams(window.location.search);
+        let roomName = urlParams.get('room');
+        
+        if (!roomName) {
+            // ルーム名がない場合はランダムな文字列を生成してリダイレクト
+            roomName = "Room-" + Math.random().toString(36).substring(7);
+            window.location.search = '?room=' + roomName;
+        }
+
+        const domain = "meet.jit.si";
+        const options = {
+            roomName: roomName,
+            parentNode: document.querySelector('#meet'),
+            lang: 'ja', // 日本語設定
+            configOverwrite: {
+                startWithAudioMuted: false,
+                startWithVideoMuted: false
+            },
+            interfaceConfigOverwrite: {
+                // 不要なボタンを隠すなどのカスタマイズが可能
+                TOOLBAR_BUTTONS: [
+                    'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
+                    'fodeviceselection', 'hangup', 'profile', 'chat', 'recording',
+                    'livestreaming', 'etherpad', 'sharedvideo', 'settings', 'raisehand',
+                    'videoquality', 'filmstrip', 'invite', 'feedback', 'stats', 'shortcuts',
+                    'tileview', 'videobackgroundblur', 'download', 'help', 'mute-everyone',
+                    'security'
+                ],
+            }
+        };
+        const api = new JitsiMeetExternalAPI(domain, options);
+    </script>
+</body>
+</html>
